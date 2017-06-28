@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const storeController = require('../store/controller');
 const userController = require('../user/controller');
+const authController = require('../auth/controller');
 
 const { catchErrors } = require('../handlers/errorHandlers');
 
@@ -28,6 +29,8 @@ router.get('/tags/', catchErrors(storeController.getStoresByTag));
 router.get('/tags/:tag', catchErrors(storeController.getStoresByTag));
 
 router.get('/login', userController.loginForm);
-router.get('/register', userController.validateRegister);
+router.get('/register', userController.registerForm);
+
+router.post('/register', userController.validateRegister, userController.register, authController.login);
 
 module.exports = router;
