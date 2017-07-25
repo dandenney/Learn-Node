@@ -1061,7 +1061,6 @@ function typeAhead(search) {
   });
 
   searchInput.on("keyup", function (e) {
-    console.log(e.keyCode);
     if (![38, 40, 13, 32].includes(e.keyCode)) {
       return;
     }
