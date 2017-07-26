@@ -2,45 +2,51 @@ const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 const slug = require("slugs");
 
-const storeSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    trim: true,
-    required: "Please enter a store name!"
-  },
-  slug: String,
-  description: {
-    type: String,
-    trim: true
-  },
-  tags: [String],
-  created: {
-    type: Date,
-    default: Date.now
-  },
-  location: {
-    type: {
+const storeSchema = new mongoose.Schema(
+  {
+    name: {
       type: String,
-      default: "Point"
+      trim: true,
+      required: "Please enter a store name!"
     },
-    coordinates: [
-      {
-        type: Number,
-        required: "You must supply coordinates!"
-      }
-    ],
-    address: {
+    slug: String,
+    description: {
       type: String,
-      required: "You must supply and address!"
+      trim: true
+    },
+    tags: [String],
+    created: {
+      type: Date,
+      default: Date.now
+    },
+    location: {
+      type: {
+        type: String,
+        default: "Point"
+      },
+      coordinates: [
+        {
+          type: Number,
+          required: "You must supply coordinates!"
+        }
+      ],
+      address: {
+        type: String,
+        required: "You must supply and address!"
+      }
+    },
+    photo: String,
+    author: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      require: "You must supply an author"
     }
   },
-  photo: String,
-  author: {
-    type: mongoose.Schema.ObjectId,
-    ref: "User",
-    require: "You must supply an author"
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
-});
+);
 
 storeSchema.index({
   name: "text",
@@ -74,4 +80,9 @@ storeSchema.statics.getTagsList = function() {
   ]);
 };
 
+storeSchema.virtual("reviews", {
+  ref: "Review",
+  localField: "_id",
+  foreignField: "store"
+});
 module.exports = mongoose.model("Store", storeSchema);
